@@ -9,11 +9,17 @@ class App extends Component {
     location: '',
     data: {},
     dates: [],
-    temps: []
+    temps: [],
+    selected: {
+    	date: '',
+    	temp: null
+    }
   }
 
   fetchData = (event) => {
+
     event.preventDefault();
+    console.log(this.state)
   
     var location = encodeURIComponent(this.state.location);
 
@@ -39,9 +45,15 @@ class App extends Component {
 		self.setState({
 			data: body,
 			dates: dates,
-			temps: temps
+			temps: temps,
+			selected: {
+		    	date: '',
+		    	temp: null
+		    }
 		})
+
     })
+    console.log(this.state)
   }
 
   changeLocation = (event) => {
@@ -51,13 +63,25 @@ class App extends Component {
     })
   }
 
+  onPlotClick = (data) => {
+  	console.log(data)
+  	if (data.points){
+  		this.setState({
+  			selected: {
+  				date: data.points[0].x,
+  				temp: data.points[0].y	
+  			}  			
+  		})
+  	}
+  }
+
   render() {
     var currentTemp = 'not loaded yet';
     
     if (this.state.data.list){
       currentTemp = this.state.data.list[0].main.temp;
     }
-
+	
     return (
       <div>
         <h1>Weather</h1>
@@ -74,14 +98,17 @@ class App extends Component {
 
         { (this.state.data.list) ? (
 			<div>
+				{/* Render the current temperatura if no specific date is picked */}
 				<p>
-		          <span>{ currentTemp }</span>
+		          <span>{ this.state.selected.temp ? this.state.selected.temp : currentTemp }</span>
 		          <span> °C</span>
+		          <span> | { this.state.selected.temp ? this.state.selected.date: '' }</span>
 		        </p>
 		        <h2>Forecast</h2>
 		        <Plot
 		        	xData={this.state.dates}
 		        	yData={this.state.temps}
+		        	onPlotClick={this.onPlotClick}
 		        	type="scatter"
 		        />
 			</div>
