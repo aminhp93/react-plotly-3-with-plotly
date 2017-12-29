@@ -72,7 +72,7 @@ class App extends Component {
           </label>
         </form>
 
-        
+        { (this.state.data.list) ? (
 			<div>
 				<p>
 		          <span>{ currentTemp }</span>
@@ -85,7 +85,7 @@ class App extends Component {
 		        	type="scatter"
 		        />
 			</div>
-        
+        ) : null }
       </div>
     );
   }
